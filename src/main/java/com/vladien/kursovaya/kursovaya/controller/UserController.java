@@ -16,10 +16,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
-// TODO: 10/27/2021 пикчи на профили,
-//  проблемы - фильтрация(скорее всего из-за рейтинга)
-//  вывод списка студентов с инфой о средней оценке
 @RequestMapping("/users")
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class UserController {
     private final CurrentPrincipalDefiner principalDefiner;
