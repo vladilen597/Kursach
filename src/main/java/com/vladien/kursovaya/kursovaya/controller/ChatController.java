@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/chat")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ChatController {
     private final CurrentPrincipalDefiner currentPrincipalDefiner;

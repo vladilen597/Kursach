@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/profile")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class ProfileController {
     private final CurrentPrincipalDefiner principalDefiner;

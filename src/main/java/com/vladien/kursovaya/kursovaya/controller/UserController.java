@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class UserController {
     private final CurrentPrincipalDefiner principalDefiner;

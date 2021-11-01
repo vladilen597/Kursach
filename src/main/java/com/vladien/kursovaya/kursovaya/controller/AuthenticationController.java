@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
