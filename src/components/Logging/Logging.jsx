@@ -16,6 +16,15 @@ const Logging = () => {
       <Link to="/logging/student_login" className="student-side">
         <article className="login-line-wrapper">
           <p className="login-line">Я СТУДЕНТ</p>
+          <div className="hover-mentor">
+            <i>
+              "Самые лучшие студенты те,
+              <br />
+              кто никогда до конца не доверяет своим профессорам"
+              <br />
+              Джим Коллинз
+            </i>
+          </div>
         </article>
         <div className="color-over" />
       </Link>
