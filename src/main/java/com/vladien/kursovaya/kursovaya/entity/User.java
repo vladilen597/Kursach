@@ -24,6 +24,9 @@ public class User implements UserDetails {
     private Long id;
 
     private String username;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
     private String password;
     private String aboutMe;
     private String profilePicture;

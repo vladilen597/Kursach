@@ -34,6 +34,9 @@ public class UserRepresentationUtil {
             coreSkills = new ArrayList<>();
         }
         UserRepresentationDto representationDto = new UserRepresentationDto();
+        representationDto.setFirstName(user.getFirstName());
+        representationDto.setLastName(user.getLastName());
+        representationDto.setPatronymic(user.getPatronymic());
         representationDto.setAverageRating(middleMark);
         representationDto.setId(user.getId());
         representationDto.setUsername(username);

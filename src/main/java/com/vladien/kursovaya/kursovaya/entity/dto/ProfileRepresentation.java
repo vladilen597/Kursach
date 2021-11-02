@@ -1,6 +1,5 @@
 package com.vladien.kursovaya.kursovaya.entity.dto;
 
-import com.vladien.kursovaya.kursovaya.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +13,9 @@ import java.util.Set;
 @Builder
 public class ProfileRepresentation {
     private Long id;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
     private String profilePicture;
     private String username;
     private Set<String> skillsNames;

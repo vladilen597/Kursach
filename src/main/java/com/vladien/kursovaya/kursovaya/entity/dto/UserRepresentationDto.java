@@ -13,6 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class UserRepresentationDto {
     private Long id;
+    private String firstName;
+    private String lastName;
+    private String patronymic;
     private String profilePicture;
     private String username;
     private Set<String> skills;

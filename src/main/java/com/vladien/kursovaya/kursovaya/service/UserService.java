@@ -69,13 +69,9 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByUsername(usernameOfEdited);
         List<CoreSkill> coreSkills = coreSkillsService.transformSkillNamesToSkillsWithSaving(dto.getCoreSkills(), user);
         user.setAboutMe(dto.getAboutMe());
-        if (!user.getUsername().equals(dto.getUsername())) {
-            if (isUsernameFree(dto.getUsername())) {
-                user.setUsername(dto.getUsername());
-            } else {
-                throw new IllegalArgumentException("This username is taken!");
-            }
-        }
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setPatronymic(dto.getPatronymic());
         user.setCoreSkills(coreSkills);
         userRepository.save(user);
         ProfileRepresentation profile = modelMapper.map(user, ProfileRepresentation.class);
