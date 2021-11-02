@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/profile")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 @RequiredArgsConstructor
 public class ProfileController {
     private final CurrentPrincipalDefiner principalDefiner;
