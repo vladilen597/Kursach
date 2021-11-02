@@ -43,19 +43,19 @@ public class AuthenticationController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(JwtAuthenticationException.class)
-    public ResponseEntity<String> handleJwtValidationExceptions(JwtAuthenticationException ex) {
-        return ResponseEntity.status(401).body("Your session token is expired or invalid. Sign in to continue");
+    public ResponseEntity<ResponseEntity<String>> handleJwtValidationExceptions(JwtAuthenticationException ex) {
+        return ResponseEntity.status(401).body(ResponseEntity.status(401).body("Your session token is expired or invalid. Sign in to continue"));
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseMessage> handleTakenUsernameExceptions(IllegalArgumentException ex) {
-        return ResponseEntity.status(403).body(new ResponseMessage(ex.getMessage()));
+    public ResponseEntity<ResponseEntity<String>> handleTakenUsernameExceptions(IllegalArgumentException ex) {
+        return ResponseEntity.status(403).body(ResponseEntity.status(403).body(ex.getMessage()));
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleNotFoundEntityExceptions(JwtAuthenticationException ex) {
-        return ResponseEntity.status(404).body("Can't find data which you are requesting");
+    public ResponseEntity<ResponseEntity<String>> handleNotFoundEntityExceptions(JwtAuthenticationException ex) {
+        return ResponseEntity.status(404).body(ResponseEntity.status(404).body("Can't find data which you are requesting"));
     }
 }
