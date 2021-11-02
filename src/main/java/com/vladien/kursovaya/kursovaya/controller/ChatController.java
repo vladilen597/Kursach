@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/chat")
-@CrossOrigin
 @RequiredArgsConstructor
 public class ChatController {
     private final CurrentPrincipalDefiner currentPrincipalDefiner;

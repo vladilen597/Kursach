@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
 @RequiredArgsConstructor
 public class UserController {
     private final CurrentPrincipalDefiner principalDefiner;

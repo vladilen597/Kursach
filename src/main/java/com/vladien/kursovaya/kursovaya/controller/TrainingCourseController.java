@@ -17,7 +17,6 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/courses")
-@CrossOrigin
 @RequiredArgsConstructor
 public class TrainingCourseController {
     private final TrainingCourseService trainingCourseService;
