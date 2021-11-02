@@ -1,0 +1,91 @@
+.logging-page {
+  display: flex;
+  height: 100vh;
+
+  position: relative;
+}
+
+.mentor-side {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  text-decoration: none;
+  color: #fff;
+  width: 50%;
+  background-color: rgba(#2a5cff, 0.5);
+  background-image: url("../../resourses/teacher.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: 0.5s all;
+
+  &:hover {
+    width: 70%;
+  }
+}
+
+.student-side {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  width: 50%;
+
+  text-decoration: none;
+  color: #fff;
+  background-color: #111;
+  background-image: url("../../resourses/student.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transition: 0.5s all;
+  &:hover {
+    width: 70%;
+  }
+}
+
+.color-over {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(#000, 0.35);
+}
+
+.login-line-wrapper {
+  z-index: 2;
+}
+
+.login-line {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  padding: 5px 10px;
+  color: #fff;
+  font-size: 40px;
+
+  // background-color: rgba(#6294ff, 0.5);
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../resourses/fonts/OpenSans/OpenSans-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../resourses/fonts/OpenSans/OpenSans-Bold.ttf");
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../resourses/fonts/OpenSans/OpenSans-Light.ttf");
+  font-weight: 300;
+}

@@ -1,0 +1,106 @@
+.custom-input-block {
+  position: relative;
+  margin-top: 20px;
+
+  height: 30px;
+}
+
+.custom-input-field {
+  font-family: "Open Sans", sans-serif;
+
+  box-sizing: border-box;
+
+  position: absolute;
+
+  width: 100%;
+  height: auto;
+
+  margin-right: 10px;
+
+  top: 0;
+  left: 0;
+  padding: 0;
+
+  border: none;
+  border-bottom: 2px solid rgba(49, 113, 172, 0.25);
+
+  z-index: 2;
+  max-width: 100%;
+  padding: 0 10px 5px 10px;
+
+  background: none;
+  color: #3b4a5f;
+  font-size: 16px;
+}
+
+.custom-input-label {
+  font-family: "Open Sans", sans-serif;
+  position: absolute;
+
+  top: 0;
+  left: 10px;
+
+  font-size: 16px;
+
+  transition: 0.2s;
+  z-index: 1;
+
+  background: transparent;
+
+  user-select: none;
+
+  color: #617086;
+}
+
+.custom-input-helper-text {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+
+  font-size: 12px;
+
+  color: #c25858;
+}
+
+.custom-input-field:focus + .custom-input-label {
+  top: -20px;
+  left: 10px;
+  font-size: 12px;
+
+  font-weight: 600;
+  color: #a2aec0;
+}
+
+.custom-input-field:focus {
+  outline: none;
+  border: none;
+  border-bottom: 2px solid rgba(49, 113, 172, 0.25);
+}
+
+.custom-input-field:focus ~ .custom-input-label,
+.custom-input-field:not(:placeholder-shown).custom-input-field:not(:focus)
+  ~ .custom-input-label {
+  top: -20px;
+  font-size: 12px;
+  left: 10px;
+  font-weight: 600;
+  color: #a2aec0;
+}
+
+.custom-input-password-eye-button {
+  background: none;
+  border: none;
+
+  position: absolute;
+
+  cursor: pointer;
+
+  z-index: 2;
+  top: -5px;
+  right: 0;
+}
+
+.password-eye-icon {
+  font-size: 30px;
+  color: #cbdbea;
+}
