@@ -11,6 +11,8 @@
   justify-content: center;
   align-items: center;
 
+  box-shadow: inset 0 0 10px 1px #000;
+
   cursor: pointer;
 
   text-decoration: none;
@@ -33,6 +35,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  box-shadow: inset 0 0 10px 1px #000;
 
   cursor: pointer;
   width: 50%;
@@ -78,10 +82,25 @@
   width: 350px;
   transition: 0.5s;
   bottom: -300px;
+  left: 25px;
+}
+
+.mentor-side:hover .hover-mentor {
+  opacity: 1;
+  position: absolute;
+  bottom: -100px;
+}
+
+.hover-student {
+  opacity: 0;
+  position: absolute;
+  width: 350px;
+  transition: 0.5s;
+  bottom: -300px;
   left: -50px;
 }
 
-.student-side:hover .hover-mentor {
+.student-side:hover .hover-student {
   opacity: 1;
   position: absolute;
   bottom: -100px;

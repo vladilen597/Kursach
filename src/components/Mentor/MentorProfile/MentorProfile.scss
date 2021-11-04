@@ -1,0 +1,113 @@
+.mentor-profile {
+  width: 80%;
+  margin-top: 50px;
+  margin-right: 50px;
+
+  border-radius: 10px;
+  box-shadow: 0 0 15px 0 rgba(#333, 0.35);
+  background-color: #fff;
+}
+
+.profile-info {
+  display: flex;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.profile-info-name-line,
+.profile-info-username {
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.profile-info-name-label {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #444;
+}
+
+.profile-info-form {
+  margin: 20px;
+
+  font-family: "Open Sans", sans-serif;
+}
+
+.profile-info-picture {
+  width: 100px;
+  height: 100px;
+
+  border-radius: 50%;
+}
+
+.profile-info-upload-block {
+  position: relative;
+}
+
+.profile-info-upload-background {
+  position: absolute;
+  opacity: 0;
+
+  width: 100px;
+  height: 100px;
+
+  background-color: rgba(#000, 0.35);
+  border-radius: 50%;
+
+  transition: 0.2s;
+}
+
+.profile-info-upload-icon {
+  position: absolute;
+  opacity: 0;
+
+  top: 35px;
+  left: 34px;
+
+  transition: 0.2s;
+}
+
+.profile-info-upload-block:hover .profile-info-upload-background,
+.profile-info-upload-block:hover .profile-info-upload-icon {
+  opacity: 1;
+}
+
+.profile-info-upload-input {
+  position: absolute;
+  z-index: 3;
+  height: 100px;
+  width: 100px;
+
+  opacity: 0;
+  cursor: pointer;
+}
+
+.blue-button {
+  padding: 5px 10px;
+  margin-top: 5px;
+
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: "Open Sans", sans-serif;
+
+  background-color: #3171ac;
+  border-radius: 40px;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #648baf;
+    color: #ccc;
+  }
+}
+
+.profile-info-rating-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

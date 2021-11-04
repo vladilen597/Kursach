@@ -6,12 +6,18 @@ import { BiUser } from "react-icons/bi";
 import { BsCardList } from "react-icons/bs";
 
 import "./Mentor.scss";
+import { connect } from "react-redux";
+import MentorStudentProfile from "./MentorStudentsList/MentorStudentProfile/MentorStudentProfile";
 
-const Mentor = () => {
+const Mentor = ({ token }) => {
+  if (!token) {
+    return <h1>Загрузка...</h1>;
+  }
+
   return (
     <>
       <header className="header">
-        <h2 className="header-user">ПРЕПОДАВАТЕЛЬ</h2>
+        <h2 className="header-user">MENTOR.LAB</h2>
       </header>
       <main className="mentor-window">
         <aside className="mentor-navigation-bar">
@@ -41,10 +47,17 @@ const Mentor = () => {
         <Switch>
           <Route path="/mentor/profile" component={MentorProfile} />
           <Route path="/mentor/students_list" component={MentorStudentsList} />
+          <Route path="/mentor/student/:id" component={MentorStudentProfile} />
         </Switch>
       </main>
     </>
   );
 };
 
-export default Mentor;
+const mapStateToProps = (state) => {
+  return {
+    token: state.token,
+  };
+};
+
+export default connect(mapStateToProps)(Mentor);

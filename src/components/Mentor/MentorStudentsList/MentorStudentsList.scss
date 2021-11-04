@@ -11,12 +11,30 @@
   list-style: none;
   border-radius: 10px;
   box-shadow: 0 0 15px 0 rgba(#333, 0.35);
+
+  background-color: #fff;
+}
+
+.students-top-list-item {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0 10px;
 }
 
 .students-list-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   padding: 0 10px;
+  cursor: pointer;
+}
+
+.students-list-item-link {
+  color: #333;
+  text-decoration: none;
+}
+
+.students-list-item-link:nth-child(2n) {
+  background-color: rgba(#3171ac, 0.1);
 }
 
 .technology-list {
@@ -29,6 +47,16 @@
 }
 
 .students-list-item:last-child {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.students-list-item:hover {
+  background-color: rgba(#3171ac, 0.3);
+  border-radius: 0;
+}
+
+.students-list-item:last-child > .students-list-item:hover {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }

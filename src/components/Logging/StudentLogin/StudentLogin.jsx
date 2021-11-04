@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 
 import "./StudentLogin.scss";
 import setToken from "../../../store/actions/setToken";
+import StudentSignupForm from "./StudentSignupForm/StudentSignupForm";
 
 const StudentLogin = ({ setToken, token }) => {
   const [loginUsername, setLoginUsername] = useState("");
@@ -40,6 +41,7 @@ const StudentLogin = ({ setToken, token }) => {
       .then((response) => response.json())
       .then((data) => {
         if (data.message) {
+          setToken(data.message);
           history.push("/mentor/students_list");
         } else {
           alert(data.error);
@@ -47,36 +49,6 @@ const StudentLogin = ({ setToken, token }) => {
         setIsLoading(false);
       })
       .catch((error) => alert("error", error));
-  };
-
-  const handleClickSignup = (event) => {
-    event.preventDefault();
-
-    setIsLoading(true);
-
-    let requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: loginUsername,
-        password: loginPassword,
-      }),
-      redirect: "follow",
-    };
-
-    fetch("http://localhost:8080/registration/student", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        setIsLoading(false);
-        if (result.message) {
-          alert("Регистрация прошла успешно!");
-        }
-        console.log(result.json());
-        setLoginUsername("");
-        setLoginPassword("");
-      })
-      .catch((error) => console.log("error", error));
   };
 
   return (
@@ -102,14 +74,8 @@ const StudentLogin = ({ setToken, token }) => {
         >
           {isLoading ? "ЗАГРУЗКА" : "ВОЙТИ"}
         </button>
-        <button
-          disabled={isLoading}
-          className="mentor-signup-button"
-          onClick={handleClickSignup}
-        >
-          {isLoading ? "ЗАГРУЗКА" : "ЗАРЕГИСТРИРОВАТЬСЯ"}
-        </button>
       </form>
+      <StudentSignupForm />
     </main>
   );
 };

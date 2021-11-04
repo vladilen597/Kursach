@@ -1,0 +1,24 @@
+.mentor-student-profile {
+  width: 80%;
+  margin-top: 50px;
+  margin-right: 50px;
+
+  border-radius: 10px;
+  box-shadow: 0 0 15px 0 rgba(#333, 0.35);
+  background-color: #fff;
+}
+
+.mentor-student-profile-form {
+  display: flex;
+  margin: 20px;
+}
+
+.profile-info-block {
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.mentor-student-profile-form-rating-block {
+  display: flex;
+  flex-direction: column;
+}
