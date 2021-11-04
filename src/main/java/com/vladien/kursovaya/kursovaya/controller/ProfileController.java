@@ -45,6 +45,7 @@ public class ProfileController {
     @PostMapping("current/uploadImage")
     public ProfileRepresentation uploadFile(@RequestParam("File") MultipartFile file) {
         String uploadedFileName = filePath + file.getOriginalFilename();
+        System.out.println(uploadedFileName);
         File savedFile = new File(uploadedFileName);
         try {
             savedFile.createNewFile();
@@ -52,7 +53,7 @@ public class ProfileController {
             fos.write(file.getBytes());
             fos.close();
             User user = principalDefiner.getPrincipal();
-            return userService.updateUserImage(user, uploadedFileName.substring(1));
+            return userService.updateUserImage(user, uploadedFileName);
         } catch (IOException e) {
             throw new IllegalArgumentException("File was not uploaded");
         }
