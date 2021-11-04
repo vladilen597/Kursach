@@ -52,7 +52,7 @@ public class ProfileController {
             fos.write(file.getBytes());
             fos.close();
             User user = principalDefiner.getPrincipal();
-            return userService.updateUserImage(user, uploadedFileName.substring(1));
+            return userService.updateUserImage(user, uploadedFileName.substring(2));
         } catch (IOException e) {
             throw new IllegalArgumentException("File was not uploaded");
         }
