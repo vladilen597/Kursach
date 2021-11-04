@@ -48,6 +48,7 @@ public class UserService implements UserDetailsService {
         profile.setGivenReviewsDtos(
                 user.getGivenReviews().stream().map(this::transformReviewToNonDatabaseDto).collect(Collectors.toSet())
         );
+        profile.setAverageReviewScore(representationUtil.getMiddleMark(user));
         profile.setSkillsNames(user.getCoreSkills().stream().map(CoreSkill::getName).collect(Collectors.toSet()));
         return profile;
     }
@@ -62,6 +63,7 @@ public class UserService implements UserDetailsService {
         profile.setGivenReviewsDtos(
                 user.getGivenReviews().stream().map(this::transformReviewToNonDatabaseDto).collect(Collectors.toSet())
         );
+        profile.setAverageReviewScore(representationUtil.getMiddleMark(user));
         return profile;
     }
 
@@ -82,6 +84,7 @@ public class UserService implements UserDetailsService {
                 user.getGivenReviews().stream().map(this::transformReviewToNonDatabaseDto).collect(Collectors.toSet())
         );
         profile.setSkillsNames(user.getCoreSkills().stream().map(CoreSkill::getName).collect(Collectors.toSet()));
+        profile.setAverageReviewScore(representationUtil.getMiddleMark(user));
         return profile;
     }
 
@@ -118,6 +121,7 @@ public class UserService implements UserDetailsService {
                 user.getGivenReviews().stream().map(this::transformReviewToNonDatabaseDto).collect(Collectors.toSet())
         );
         profile.setSkillsNames(user.getCoreSkills().stream().map(CoreSkill::getName).collect(Collectors.toSet()));
+        profile.setAverageReviewScore(representationUtil.getMiddleMark(user));
         return profile;
     }
 

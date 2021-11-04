@@ -13,6 +13,7 @@ import java.util.Set;
 @Builder
 public class ProfileRepresentation {
     private Long id;
+    private double averageReviewScore;
     private String firstName;
     private String lastName;
     private String patronymic;

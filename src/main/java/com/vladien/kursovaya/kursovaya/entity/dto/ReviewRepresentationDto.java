@@ -6,6 +6,6 @@ import lombok.Data;
 public class ReviewRepresentationDto {
     private String comment;
     private int rating;
-    private String authorName;
-    private String receiverName;
+    private String authorUsername;
+    private String receiverUsername;
 }

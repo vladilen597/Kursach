@@ -18,19 +18,9 @@ public class UserRepresentationUtil {
 
     public UserRepresentationDto defineUserRepresentation(String username) {
         User user = userRepository.findByUsername(username);
-        Set<Review> reviews = user.getReceivedReviews();
-        if(reviews == null) {
-            reviews = new HashSet<>();
-        }
-        OptionalDouble optMiddleMark = reviews.stream().mapToInt(Review::getRating).average();
-        double middleMark;
-        if(optMiddleMark.isEmpty())  {
-            middleMark = 0;
-        } else {
-            middleMark = optMiddleMark.getAsDouble();
-        }
+        double middleMark = getMiddleMark(user);
         List<CoreSkill> coreSkills = user.getCoreSkills();
-        if(coreSkills == null) {
+        if (coreSkills == null) {
             coreSkills = new ArrayList<>();
         }
         UserRepresentationDto representationDto = new UserRepresentationDto();
@@ -43,5 +33,20 @@ public class UserRepresentationUtil {
         representationDto.setProfilePicture(user.getProfilePicture());
         representationDto.setSkills(coreSkills.stream().map(CoreSkill::getName).collect(Collectors.toSet()));
         return representationDto;
+    }
+
+    public double getMiddleMark(User user) {
+        Set<Review> reviews = user.getReceivedReviews();
+        if (reviews == null) {
+            reviews = new HashSet<>();
+        }
+        OptionalDouble optMiddleMark = reviews.stream().mapToInt(Review::getRating).average();
+        double middleMark;
+        if (optMiddleMark.isEmpty()) {
+            middleMark = 0;
+        } else {
+            middleMark = optMiddleMark.getAsDouble();
+        }
+        return middleMark;
     }
 }
