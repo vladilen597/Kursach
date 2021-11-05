@@ -18,6 +18,10 @@ public class TrainingCourse {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String courseName;
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private SkillLevel skillLevel;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

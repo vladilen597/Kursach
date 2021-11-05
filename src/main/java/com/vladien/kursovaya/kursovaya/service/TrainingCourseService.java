@@ -1,14 +1,8 @@
 package com.vladien.kursovaya.kursovaya.service;
 
+import com.vladien.kursovaya.kursovaya.entity.*;
+import com.vladien.kursovaya.kursovaya.entity.dto.*;
 import com.vladien.kursovaya.kursovaya.service.util.UserRepresentationUtil;
-import com.vladien.kursovaya.kursovaya.entity.ChatRoom;
-import com.vladien.kursovaya.kursovaya.entity.TrainingCourse;
-import com.vladien.kursovaya.kursovaya.entity.TrainingRequest;
-import com.vladien.kursovaya.kursovaya.entity.User;
-import com.vladien.kursovaya.kursovaya.entity.dto.TextDto;
-import com.vladien.kursovaya.kursovaya.entity.dto.TrainingCourseRepresentation;
-import com.vladien.kursovaya.kursovaya.entity.dto.TrainingRequestRepresentation;
-import com.vladien.kursovaya.kursovaya.entity.dto.UserRepresentationDto;
 import com.vladien.kursovaya.kursovaya.repository.TrainingCourseRepository;
 import com.vladien.kursovaya.kursovaya.repository.TrainingRequestRepository;
 import com.vladien.kursovaya.kursovaya.repository.UserRepository;
@@ -69,16 +63,19 @@ public class TrainingCourseService {
                 .collect(Collectors.toList());
     }
 
-    public TrainingCourseRepresentation addCourse(String mentorName, String courseName) {
+    public TrainingCourseRepresentation addCourse(String mentorName, TrainingCourseCreationDto trainingCourseCreationDto) {
         User courseOwner = defineOwnerByUsername(mentorName);
-        if (doesCourseAlreadyExist(courseOwner, courseName)) {
+        if (doesCourseAlreadyExist(courseOwner, trainingCourseCreationDto.getCourseName())) {
             throw new IllegalArgumentException("Such course is already present for this mentor");
         }
+        SkillLevel level = SkillLevel.valueOf(trainingCourseCreationDto.getSkillLevel());
         TrainingCourse trainingCourse = trainingCourseRepository.save(TrainingCourse.builder()
                 .owner(courseOwner)
-                .courseName(courseName)
+                .courseName(trainingCourseCreationDto.getCourseName())
+                .description(trainingCourseCreationDto.getDescription())
+                        .skillLevel(level)
                 .build());
-        return getTrainingCourseRepresentation(trainingCourse, courseName, courseOwner);
+        return getTrainingCourseRepresentation(trainingCourse, trainingCourseCreationDto.getCourseName(), courseOwner);
     }
 
     public List<TrainingCourseRepresentation> deleteCourse(String mentorName, Long courseId) {
@@ -168,7 +165,7 @@ public class TrainingCourseService {
 
     private TrainingCourseRepresentation getTrainingCourseRepresentation(TrainingCourse course, String courseName, User courseOwner) {
         UserRepresentationDto profile = representationUtil.defineUserRepresentation(courseOwner.getUsername());
-        if(course.getActiveStudents() == null) {
+        if (course.getActiveStudents() == null) {
             course.setActiveStudents(new ArrayList<>());
         }
         return TrainingCourseRepresentation.builder()
@@ -179,6 +176,8 @@ public class TrainingCourseService {
                         .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
                         .collect(Collectors.toList()))
                 .id(course.getId())
+                .description(course.getDescription())
+                .skillLevel(course.getSkillLevel().getRussianAnalogue())
                 .build();
     }
 

@@ -10,6 +10,8 @@ import java.util.List;
 public class TrainingCourseRepresentation {
     private Long id;
     private String courseName;
+    private String description;
+    private String skillLevel;
     private UserRepresentationDto mentorName;
     private List<UserRepresentationDto> students;
 }

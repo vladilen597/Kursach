@@ -35,9 +35,9 @@ public class TrainingCourseController {
 
     @PostMapping("/current")
     @Secured("ROLE_MENTOR")
-    public TrainingCourseRepresentation addMentorCourse(@RequestBody TextDto courseName) {
+    public TrainingCourseRepresentation addMentorCourse(@RequestBody TrainingCourseCreationDto trainingCourseCreationDto) {
         String mentorName = principalDefiner.currentUsername();
-        return trainingCourseService.addCourse(mentorName, courseName.getText());
+        return trainingCourseService.addCourse(mentorName, trainingCourseCreationDto);
     }
 
     @DeleteMapping("/current")
