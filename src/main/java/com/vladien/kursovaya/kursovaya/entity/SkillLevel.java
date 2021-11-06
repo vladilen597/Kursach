@@ -1,7 +1,7 @@
 package com.vladien.kursovaya.kursovaya.entity;
 
 public enum SkillLevel {
-    NOVICE("Новичек"),
+    NOVICE("Новичок"),
     EXPERIENCED("Опытный"),
     ADVANCED("Продвинутый"),
     PROFESSIONAL("Профессионал");
