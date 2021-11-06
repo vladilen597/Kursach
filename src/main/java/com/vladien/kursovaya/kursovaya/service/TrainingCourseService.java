@@ -158,8 +158,11 @@ public class TrainingCourseService {
                 .requestId(request.getId())
                 .creationTime(request.getCreationDateTime())
                 .requester(representationUtil.defineUserRepresentation(assigner.getUsername()))
-                .mentor(modelMapper.map(userRepository.findByUsername(mentorName), UserRepresentationDto.class))
-                .courseId(request.getTrainingCourse().getId())
+                .courseRepresentation(getTrainingCourseRepresentation(
+                        request.getTrainingCourse(),
+                        request.getTrainingCourse().getCourseName(),
+                        request.getMentor())
+                )
                 .build();
     }
 
@@ -167,6 +170,10 @@ public class TrainingCourseService {
         UserRepresentationDto profile = representationUtil.defineUserRepresentation(courseOwner.getUsername());
         if (course.getActiveStudents() == null) {
             course.setActiveStudents(new ArrayList<>());
+        }
+        String skillLevel = "Нету";
+        if(course.getSkillLevel() != null) {
+            skillLevel = course.getSkillLevel().getRussianAnalogue();
         }
         return TrainingCourseRepresentation.builder()
                 .mentorName(profile)
@@ -177,7 +184,7 @@ public class TrainingCourseService {
                         .collect(Collectors.toList()))
                 .id(course.getId())
                 .description(course.getDescription())
-                .skillLevel(course.getSkillLevel().getRussianAnalogue())
+                .skillLevel(skillLevel)
                 .build();
     }
 

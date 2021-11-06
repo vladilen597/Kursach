@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TrainingRequestRepresentation {
     private Long requestId;
-    private Long courseId;
-    private UserRepresentationDto mentor;
+    private TrainingCourseRepresentation courseRepresentation;
     private UserRepresentationDto requester;
     private LocalDateTime creationTime;
 }
