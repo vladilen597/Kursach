@@ -75,8 +75,8 @@ public class TrainingCourseController {
         return trainingCourseService.findRequestsToMentor(principal);
     }
 
-    @GetMapping("/students/courses")
-    @Secured("ROLE_MENTOR")
+    @GetMapping("/enrolled")
+    @Secured("ROLE_CLIENT")
     public List<TrainingCourseRepresentation> showCoursesWhereStudentISEnrolled() {
         User principal = principalDefiner.getPrincipal();
         return trainingCourseService.findCoursesByEnrolledStudent(principal);

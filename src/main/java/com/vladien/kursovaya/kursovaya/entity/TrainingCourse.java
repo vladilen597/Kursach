@@ -35,6 +35,6 @@ public class TrainingCourse {
     )
     private List<User> activeStudents;
 
-    @OneToMany(mappedBy = "trainingCourse", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainingCourse", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<TrainingRequest> requests;
 }
