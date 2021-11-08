@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface TrainingCourseRepository extends JpaRepository<TrainingCourse, Long> {
     List<TrainingCourse> findAllByOwner(User owner);
     Optional<TrainingCourse> findByOwnerAndCourseName(User owner, String courseName);
+    List<TrainingCourse> findAllByActiveStudentsContains(User student);
 }

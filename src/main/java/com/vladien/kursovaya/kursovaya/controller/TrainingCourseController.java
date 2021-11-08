@@ -75,6 +75,13 @@ public class TrainingCourseController {
         return trainingCourseService.findRequestsToMentor(principal);
     }
 
+    @GetMapping("/students/courses")
+    @Secured("ROLE_MENTOR")
+    public List<TrainingCourseRepresentation> showCoursesWhereStudentISEnrolled() {
+        User principal = principalDefiner.getPrincipal();
+        return trainingCourseService.findCoursesByEnrolledStudent(principal);
+    }
+
     @PostMapping("/students/request/{requestId}/approve")
     @Secured("ROLE_MENTOR")
     public List<TrainingRequestRepresentation> approveTrainingStart(@PathVariable String requestId) {
@@ -89,11 +96,11 @@ public class TrainingCourseController {
         return trainingCourseService.disapproveTraining(principal, requestId);
     }
 
-    @PostMapping("/students/training/{requestId}/finish/{trainingId}")
+    @PostMapping("/students/training/{courseId}/finish/{studentId}")
     @Secured("ROLE_MENTOR")
-    public TrainingCourseRepresentation finishTraining(@PathVariable String trainingId, @PathVariable String requestId) {
+    public TrainingCourseRepresentation finishTraining(@PathVariable String studentId, @PathVariable String courseId) {
         User principal = principalDefiner.getPrincipal();
-        return trainingCourseService.finishTraining(principal, trainingId, requestId);
+        return trainingCourseService.finishTraining(principal, courseId, studentId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

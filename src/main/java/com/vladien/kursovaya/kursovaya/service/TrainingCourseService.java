@@ -31,6 +31,15 @@ public class TrainingCourseService {
 
     public TrainingRequestRepresentation signForTraining(User assigner, String mentorName, Long courseId) {
         TrainingCourse trainingCourse = trainingCourseRepository.getById(courseId);
+        if(trainingCourse.getActiveStudents().contains(assigner)) {
+            throw new IllegalArgumentException("You are already enrolled for this course");
+        }
+        if (trainingCourse.getRequests()
+                .stream()
+                .map(TrainingRequest::getRequester)
+                .anyMatch(requester -> requester.equals(assigner))) {
+            throw new IllegalArgumentException("You have already sent a request for this course");
+        }
         ChatRoom createdChat = chatRoomService.createChatRoom(assigner, mentorName);
         messageService.createMessage(assigner, String.valueOf(createdChat.getId()), new TextDto("Hello, I want to sign for one of your trainings!!!"));
         TrainingRequest request = TrainingRequest
@@ -53,6 +62,12 @@ public class TrainingCourseService {
         return requests
                 .stream()
                 .map(request -> getTrainingRequestRepresentation(request.getRequester(), mentor.getUsername(), request))
+                .collect(Collectors.toList());
+    }
+
+    public List<TrainingCourseRepresentation> findCoursesByEnrolledStudent(User student) {
+        return trainingCourseRepository.findAllByActiveStudentsContains(student).stream()
+                .map(training -> getTrainingCourseRepresentation(training, training.getCourseName(), student))
                 .collect(Collectors.toList());
     }
 
@@ -98,23 +113,6 @@ public class TrainingCourseService {
                 .collect(Collectors.toList());
     }
 
-    //public List<TrainingRequestRepresentation> findUserRequests(String studentName) {
-    //    User student = userRepository.findByUsername(studentName);
-    //    return trainingRequestRepository.findAllByRequester(student)
-    //            .stream()
-    //            .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
-    //            .collect(Collectors.toList());
-    //}
-
-    //public List<TrainingRequestRepresentation> findUserUnapprovedRequests(String studentName) {
-    //    User student = userRepository.findByUsername(studentName);
-    //    return trainingRequestRepository.findAllByRequester(student)
-    //            .stream()
-    //            .filter(trainingRequest -> !trainingRequest.getIsApproved())
-    //            .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
-    //            .collect(Collectors.toList());
-    //}
-
     public List<TrainingRequestRepresentation> approveTraining(User mentor, String requestId) {
         Long id = defineId(requestId);
         Optional<TrainingRequest> request = trainingRequestRepository.findById(id);
@@ -122,9 +120,6 @@ public class TrainingCourseService {
             User student = userRepository.findById(request.get().getRequester().getId()).get();
             TrainingCourse trainingCourse = trainingRequest.getTrainingCourse();
             trainingCourse.getActiveStudents().add(student);
-            //User mentorFullData = request.get().getMentor();
-            //mentorFullData.getStudents().add(student);
-            //userRepository.save(mentorFullData);
             trainingCourseRepository.save(trainingCourse);
             trainingRequestRepository.delete(trainingRequest);
         });
@@ -146,19 +141,17 @@ public class TrainingCourseService {
                 .collect(Collectors.toList());
     }
 
-    public TrainingCourseRepresentation finishTraining(User mentor, String requestId, String trainingId) {
-        Long idForRequest = defineId(requestId);
+    public TrainingCourseRepresentation finishTraining(User mentor, String trainingId, String studentId) {
+        Long studentIdValue = defineId(studentId);
         Long idForTraining = defineId(trainingId);
         TrainingCourse trainingCourse = trainingCourseRepository.getById(idForTraining);
         if (trainingCourse.getOwner().getUsername().equals(mentor.getUsername())) {
-            Optional<TrainingRequest> request = trainingRequestRepository.findById(idForRequest);
-            if (request.isEmpty()) {
-                throw new IllegalArgumentException("Invalid training request id");
+            Optional<User> student = userRepository.findById(studentIdValue);
+            if (student.isEmpty()) {
+                throw new IllegalArgumentException("Invalid student id");
             }
-            User student = userRepository.findById(request.get().getRequester().getId()).get();
-            trainingCourse.getActiveStudents().remove(student);
+            trainingCourse.getActiveStudents().remove(student.get());
             TrainingCourse course = trainingCourseRepository.save(trainingCourse);
-            trainingRequestRepository.delete(request.get());
             return getTrainingCourseRepresentation(course, trainingCourse.getCourseName(), trainingCourse.getOwner());
         } else {
             throw new IllegalArgumentException("This course is not permitted to be changed by you");
