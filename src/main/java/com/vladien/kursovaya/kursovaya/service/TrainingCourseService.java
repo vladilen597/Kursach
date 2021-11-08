@@ -90,15 +90,6 @@ public class TrainingCourseService {
         throw new IllegalArgumentException("This course belongs to another mentor!");
     }
 
-    public List<TrainingRequestRepresentation> findUserApprovedRequests(String studentName) {
-        User student = userRepository.findByUsername(studentName);
-        return trainingRequestRepository.findAllByRequester(student)
-                .stream()
-                .filter(TrainingRequest::getIsApproved)
-                .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
-                .collect(Collectors.toList());
-    }
-
     public List<TrainingRequestRepresentation> findUserRequests(String studentName) {
         User student = userRepository.findByUsername(studentName);
         return trainingRequestRepository.findAllByRequester(student)
@@ -107,27 +98,48 @@ public class TrainingCourseService {
                 .collect(Collectors.toList());
     }
 
-    public List<TrainingRequestRepresentation> findUserUnapprovedRequests(String studentName) {
-        User student = userRepository.findByUsername(studentName);
-        return trainingRequestRepository.findAllByRequester(student)
-                .stream()
-                .filter(trainingRequest -> !trainingRequest.getIsApproved())
-                .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
-                .collect(Collectors.toList());
-    }
+    //public List<TrainingRequestRepresentation> findUserRequests(String studentName) {
+    //    User student = userRepository.findByUsername(studentName);
+    //    return trainingRequestRepository.findAllByRequester(student)
+    //            .stream()
+    //            .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
+    //            .collect(Collectors.toList());
+    //}
+
+    //public List<TrainingRequestRepresentation> findUserUnapprovedRequests(String studentName) {
+    //    User student = userRepository.findByUsername(studentName);
+    //    return trainingRequestRepository.findAllByRequester(student)
+    //            .stream()
+    //            .filter(trainingRequest -> !trainingRequest.getIsApproved())
+    //            .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
+    //            .collect(Collectors.toList());
+    //}
 
     public List<TrainingRequestRepresentation> approveTraining(User mentor, String requestId) {
         Long id = defineId(requestId);
         Optional<TrainingRequest> request = trainingRequestRepository.findById(id);
         request.ifPresent(trainingRequest -> {
-            trainingRequest.setIsApproved(true);
             User student = userRepository.findById(request.get().getRequester().getId()).get();
             TrainingCourse trainingCourse = trainingRequest.getTrainingCourse();
             trainingCourse.getActiveStudents().add(student);
+            //User mentorFullData = request.get().getMentor();
+            //mentorFullData.getStudents().add(student);
+            //userRepository.save(mentorFullData);
             trainingCourseRepository.save(trainingCourse);
-            trainingRequestRepository.save(trainingRequest);
+            trainingRequestRepository.delete(trainingRequest);
         });
-        return trainingRequestRepository.findAllByIsApprovedAndMentor(true, mentor)
+        return trainingRequestRepository.findAllByMentor(mentor)
+                .stream()
+                .map(trainingRequest -> getTrainingRequestRepresentation(trainingRequest.getRequester(),
+                        trainingRequest.getMentor().getUsername(), trainingRequest))
+                .collect(Collectors.toList());
+    }
+
+    public List<TrainingRequestRepresentation> disapproveTraining(User mentor, String requestId) {
+        Long id = defineId(requestId);
+        Optional<TrainingRequest> request = trainingRequestRepository.findById(id);
+        request.ifPresent(trainingRequestRepository::delete);
+        return trainingRequestRepository.findAllByMentor(mentor)
                 .stream()
                 .map(trainingRequest -> getTrainingRequestRepresentation(trainingRequest.getRequester(),
                         trainingRequest.getMentor().getUsername(), trainingRequest))
@@ -181,7 +193,7 @@ public class TrainingCourseService {
                 .students(course.getActiveStudents()
                         .stream()
                         .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toSet()))
                 .id(course.getId())
                 .description(course.getDescription())
                 .skillLevel(skillLevel)

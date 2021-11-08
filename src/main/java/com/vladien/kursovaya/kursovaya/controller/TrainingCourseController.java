@@ -65,14 +65,7 @@ public class TrainingCourseController {
     @Secured("ROLE_CLIENT")
     public List<TrainingRequestRepresentation> viewCurrentUserApprovedRequests() {
         User principal = principalDefiner.getPrincipal();
-        return trainingCourseService.findUserApprovedRequests(principal.getUsername());
-    }
-
-    @GetMapping("/requests/unapproved")
-    @Secured("ROLE_CLIENT")
-    public List<TrainingRequestRepresentation> viewCurrentUserUnapprovedRequests() {
-        User principal = principalDefiner.getPrincipal();
-        return trainingCourseService.findUserUnapprovedRequests(principal.getUsername());
+        return trainingCourseService.findUserRequests(principal.getUsername());
     }
 
     @GetMapping("/students/requests")
@@ -89,11 +82,18 @@ public class TrainingCourseController {
         return trainingCourseService.approveTraining(principal, requestId);
     }
 
-    @PostMapping("/students/training/{courseId}/finish/{trainingId}")
+    @PostMapping("/students/request/{requestId}/disapprove")
     @Secured("ROLE_MENTOR")
-    public TrainingCourseRepresentation finishTraining(@PathVariable String trainingId, @PathVariable String courseId) {
+    public List<TrainingRequestRepresentation> disapproveTrainingStart(@PathVariable String requestId) {
         User principal = principalDefiner.getPrincipal();
-        return trainingCourseService.finishTraining(principal, trainingId, courseId);
+        return trainingCourseService.disapproveTraining(principal, requestId);
+    }
+
+    @PostMapping("/students/training/{requestId}/finish/{trainingId}")
+    @Secured("ROLE_MENTOR")
+    public TrainingCourseRepresentation finishTraining(@PathVariable String trainingId, @PathVariable String requestId) {
+        User principal = principalDefiner.getPrincipal();
+        return trainingCourseService.finishTraining(principal, trainingId, requestId);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

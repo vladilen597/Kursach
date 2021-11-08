@@ -1,15 +1,13 @@
 package com.vladien.kursovaya.kursovaya.service;
 
-import com.vladien.kursovaya.kursovaya.service.util.UserRepresentationUtil;
-import com.vladien.kursovaya.kursovaya.entity.CoreSkill;
-import com.vladien.kursovaya.kursovaya.entity.Review;
-import com.vladien.kursovaya.kursovaya.entity.User;
-import com.vladien.kursovaya.kursovaya.entity.UserRole;
+import com.vladien.kursovaya.kursovaya.entity.*;
 import com.vladien.kursovaya.kursovaya.entity.dto.EditProfileDto;
 import com.vladien.kursovaya.kursovaya.entity.dto.ProfileRepresentation;
 import com.vladien.kursovaya.kursovaya.entity.dto.ReviewDto;
 import com.vladien.kursovaya.kursovaya.entity.dto.UserRepresentationDto;
+import com.vladien.kursovaya.kursovaya.repository.TrainingCourseRepository;
 import com.vladien.kursovaya.kursovaya.repository.UserRepository;
+import com.vladien.kursovaya.kursovaya.service.util.UserRepresentationUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -28,6 +27,7 @@ import static java.util.Objects.isNull;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final CoreSkillsService coreSkillsService;
+    private final TrainingCourseRepository trainingCourseRepository;
     private final ModelMapper modelMapper;
     private final UserRepresentationUtil representationUtil;
 
@@ -125,24 +125,23 @@ public class UserService implements UserDetailsService {
         return profile;
     }
 
-    public List<UserRepresentationDto> findMentorTrainees(User mentor) {
-        return userRepository.findById(mentor.getId())
-                .map(User::getStudents)
-                .orElse(new ArrayList<>())
+    public Set<UserRepresentationDto> findMentorTrainees(User mentor) {
+        return trainingCourseRepository.findAllByOwner(mentor)
                 .stream()
+                .flatMap(course -> course.getActiveStudents().stream())
                 .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<UserRepresentationDto> findMentorUnapprovedTrainees(User mentor) {
-        return userRepository.findById(mentor.getId())
-                .map(User::getTrainingRequests)
-                .orElse(new ArrayList<>())
-                .stream()
-                .map(request -> userRepository.findByUsername(request.getRequester().getUsername()))
-                .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
-                .collect(Collectors.toList());
-    }
+    //public List<UserRepresentationDto> findMentorUnapprovedTrainees(User mentor) {
+    //    return userRepository.findById(mentor.getId())
+    //            .map(User::getTrainingRequests)
+    //            .orElse(new ArrayList<>())
+    //            .stream()
+    //            .map(request -> userRepository.findByUsername(request.getRequester().getUsername()))
+    //            .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
+    //            .collect(Collectors.toList());
+    //}
 
     private List<User> filterAllSpecifiedRoleUsers(int rating, UserRole role, List<CoreSkill> skills) {
         return userRepository

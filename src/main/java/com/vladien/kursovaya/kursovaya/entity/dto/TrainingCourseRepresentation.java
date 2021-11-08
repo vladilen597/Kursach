@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -13,5 +14,5 @@ public class TrainingCourseRepresentation {
     private String description;
     private String skillLevel;
     private UserRepresentationDto mentorName;
-    private List<UserRepresentationDto> students;
+    private Set<UserRepresentationDto> students;
 }

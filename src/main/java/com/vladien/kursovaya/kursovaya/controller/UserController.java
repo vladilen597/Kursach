@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -48,16 +49,9 @@ public class UserController {
 
     @GetMapping("/students/trainees")
     @Secured("ROLE_MENTOR")
-    public List<UserRepresentationDto> showMentorStudents() {
+    public Set<UserRepresentationDto> showMentorStudents() {
         User principal = principalDefiner.getPrincipal();
         return userService.findMentorTrainees(principal);
-    }
-
-    @GetMapping("/students/trainees/unapproved")
-    @Secured("ROLE_MENTOR")
-    public List<UserRepresentationDto> showMentorPendingStudents() {
-        User principal = principalDefiner.getPrincipal();
-        return userService.findMentorUnapprovedTrainees(principal);
     }
 
     @PostMapping("/students/filter")
