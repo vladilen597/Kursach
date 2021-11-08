@@ -33,6 +33,17 @@ public class TrainingCourseController {
         return trainingCourseService.findCoursesByMentor(mentorName);
     }
 
+    @GetMapping("/{mentorName}/active")
+    public List<TrainingCourseRepresentation> showMentorCoursesWithStudents(@PathVariable String mentorName) {
+        return trainingCourseService.findCoursesByMentorWithStudents(mentorName);
+    }
+
+    @GetMapping("/current/active")
+    public List<TrainingCourseRepresentation> showCurrentMentorCoursesWithStudents() {
+        String mentorName = principalDefiner.currentUsername();
+        return trainingCourseService.findCoursesByMentorWithStudents(mentorName);
+    }
+
     @PostMapping("/current")
     @Secured("ROLE_MENTOR")
     public TrainingCourseRepresentation addMentorCourse(@RequestBody TrainingCourseCreationDto trainingCourseCreationDto) {
@@ -80,6 +91,12 @@ public class TrainingCourseController {
     public List<TrainingCourseRepresentation> showCoursesWhereStudentISEnrolled() {
         User principal = principalDefiner.getPrincipal();
         return trainingCourseService.findCoursesByEnrolledStudent(principal);
+    }
+
+    @GetMapping("/enrolled/{studentName}")
+    @Secured("ROLE_CLIENT")
+    public List<TrainingCourseRepresentation> showCoursesWhereStudentISEnrolled(@PathVariable String studentName) {
+        return trainingCourseService.findCoursesByEnrolledStudent(studentName);
     }
 
     @PostMapping("/students/request/{requestId}/approve")

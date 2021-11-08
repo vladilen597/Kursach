@@ -71,9 +71,26 @@ public class TrainingCourseService {
                 .collect(Collectors.toList());
     }
 
+    public List<TrainingCourseRepresentation> findCoursesByEnrolledStudent(String studentName) {
+        User student = userRepository.findByUsername(studentName);
+        return trainingCourseRepository.findAllByActiveStudentsContains(student).stream()
+                .map(training -> getTrainingCourseRepresentation(training, training.getCourseName(), student))
+                .collect(Collectors.toList());
+    }
+
     public List<TrainingCourseRepresentation> findCoursesByMentor(String mentorName) {
         User courseOwner = defineOwnerByUsername(mentorName);
-        return trainingCourseRepository.findAllByOwner(courseOwner).stream()
+        return trainingCourseRepository.findAllByOwner(courseOwner)
+                .stream()
+                .map(training -> getTrainingCourseRepresentation(training, training.getCourseName(), courseOwner))
+                .collect(Collectors.toList());
+    }
+
+    public List<TrainingCourseRepresentation> findCoursesByMentorWithStudents(String mentorName) {
+        User courseOwner = defineOwnerByUsername(mentorName);
+        return trainingCourseRepository.findAllByOwner(courseOwner)
+                .stream()
+                .filter(course -> !course.getActiveStudents().isEmpty())
                 .map(training -> getTrainingCourseRepresentation(training, training.getCourseName(), courseOwner))
                 .collect(Collectors.toList());
     }
