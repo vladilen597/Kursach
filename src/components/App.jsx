@@ -11,6 +11,7 @@ import MentorLogin from "./Logging/MentorLogin/MentorLogin.jsx";
 import StudentLogin from "./Logging/StudentLogin/StudentLogin.jsx";
 import Logging from "./Logging/Logging.jsx";
 import Mentor from "./Mentor/Mentor.jsx";
+import Student from "./Student/Student.jsx";
 
 import "./App.scss";
 
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/logging/student_login" component={StudentLogin} />
         <Route path="/logging/mentor_login" component={MentorLogin} />
         <Route path="/mentor" component={Mentor} />
+        <Route path="/student" component={Student} />
         <Redirect to="/logging" />
       </Switch>
     </Router>

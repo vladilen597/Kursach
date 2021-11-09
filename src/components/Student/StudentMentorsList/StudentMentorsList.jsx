@@ -2,13 +2,12 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import ReactStars from "react-rating-stars-component";
 import { motion } from "framer-motion";
 import { BsSearch } from "react-icons/bs";
 
-import "./MentorStudentsList.scss";
+import "./StudentMentorsList.scss";
 
-const MentorStudentsList = ({ token }) => {
+const StudentMentorsList = ({ token }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [studentsList, setStudentsList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,7 +20,7 @@ const MentorStudentsList = ({ token }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:8080/users/students", {
+    fetch("http://localhost:8080/users/mentors", {
       headers: {
         Authorization: token,
       },
@@ -53,39 +52,29 @@ const MentorStudentsList = ({ token }) => {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        studentsList.map((student) => {
+        studentsList.map((mentor) => {
           const fullName =
-            student.lastName +
-            " " +
-            student.firstName +
-            " " +
-            student.patronymic;
+            mentor.lastName + " " + mentor.firstName + " " + mentor.patronymic;
           if (
             fullName.toLocaleLowerCase().match(searchQuery.toLocaleLowerCase())
           ) {
             return (
               <Link
                 className="students-list-item-link"
-                to={`/mentor/student/${student.username}`}
-                key={student.id}
+                to={`/student/mentor/${mentor.username}`}
+                key={mentor.id}
               >
                 <li className="students-list-item">
                   <p>
-                    {student.lastName +
+                    {mentor.lastName +
                       " " +
-                      student.firstName +
+                      mentor.firstName +
                       " " +
-                      student.patronymic}
+                      mentor.patronymic}
                   </p>
-                  <ReactStars
-                    classNames="students-list-item-rating"
-                    size={24}
-                    isHalf={true}
-                    edit={false}
-                    value={student.averageRating}
-                  />
+                  <p>{mentor.averageRating}</p>
                   <ul className="technology-list">
-                    {student.skills.map((technology) => {
+                    {mentor.skills.map((technology) => {
                       return (
                         <li className="technology-list-item" key={technology}>
                           {technology}
@@ -116,8 +105,7 @@ const MentorStudentsList = ({ token }) => {
 const mapStateToProps = (state) => {
   return {
     token: state.token,
-    profileId: state.profileId,
   };
 };
 
-export default connect(mapStateToProps)(MentorStudentsList);
+export default connect(mapStateToProps)(StudentMentorsList);

@@ -1,0 +1,52 @@
+.student-mentor-profile {
+  width: 80%;
+  margin-top: 50px;
+  margin-right: 50px;
+  padding: 20px;
+
+  border-radius: 10px;
+  box-shadow: 0 0 15px 0 rgba(#333, 0.35);
+  background-color: #fff;
+}
+
+.student-mentor-profile {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.student-mentor-profile-form {
+  display: flex;
+  align-items: flex-start;
+}
+
+.profile-info-block {
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.student-mentor-profile-form-rating-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-apply-button {
+  padding: 5px 10px;
+
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: "Open Sans", sans-serif;
+
+  background-color: #3171ac;
+  border-radius: 40px;
+  border: none;
+  outline: none;
+
+  cursor: pointer;
+
+  &:disabled {
+    background-color: #648baf;
+    color: #ccc;
+  }
+}

@@ -29,7 +29,7 @@ const StudentLogin = ({ setToken, token }) => {
 
     let requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { Autorization: token, "Content-Type": "application/json" },
       body: JSON.stringify({
         username: loginUsername,
         password: loginPassword,
@@ -40,15 +40,14 @@ const StudentLogin = ({ setToken, token }) => {
     fetch("http://localhost:8080/login", requestOptions)
       .then((response) => response.json())
       .then((data) => {
-        if (data.message) {
-          setToken(data.message);
-          history.push("/mentor/students_list");
-        } else {
-          alert(data.error);
-        }
+        history.push("/student/profile");
         setIsLoading(false);
+        setToken(data.message);
       })
-      .catch((error) => alert("error", error));
+      .catch((error) => {
+        alert("error", error);
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -88,7 +87,7 @@ const mapStateToProps = (state) => {
 
 const maDispatchToProps = (dispatch) => {
   return {
-    setToken: (id) => dispatch(setToken),
+    setToken: (id) => dispatch(setToken(id)),
   };
 };
 

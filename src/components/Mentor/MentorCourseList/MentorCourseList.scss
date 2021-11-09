@@ -1,0 +1,95 @@
+.mentor-course-display {
+  width: 80%;
+  margin-top: 50px;
+  margin-right: 50px;
+
+  border-radius: 10px;
+  box-shadow: 0px 0px 27px rgba(0, 0, 0, 0.07);
+  background-color: #fff;
+}
+
+.mentor-course-display-add-course {
+  display: flex;
+  align-items: center;
+
+  padding: 7px 10px;
+  margin: 0;
+
+  border: 2px solid rgb(37, 209, 74);
+  border-top-left-radius: 10px;
+  background: none;
+
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.mentor-course-display-add-course-icon {
+  font-size: 20px;
+  margin-left: 5px;
+  transition: 1s;
+}
+
+.mentor-course-display-add-course:hover .mentor-course-display-add-course-icon {
+  transform: rotate(360deg);
+}
+
+.mentor-course-display-list {
+  border-top: 1px solid rgba(#333, 0.15);
+  padding: 5px 5px;
+}
+
+.mentor-course-display-list ul {
+  padding: 0;
+  margin: 0;
+  margin-left: 20px;
+}
+
+.mentor-course-display-list-item {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.mentor-course-display-list-item-icon {
+  padding: 5px;
+  margin-right: 10px;
+
+  color: #b10000;
+  border: 2px solid #b10000;
+  border-radius: 5px;
+
+  cursor: pointer;
+}
+
+.mentor-course-display-list-item-delete-block {
+  display: flex;
+  align-items: center;
+}
+
+.mentor-course-display-header {
+  margin: 0;
+  padding: 7px 10px;
+}
+
+.mentor-course-display-active-list-item {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.mentor-course-display-active-students-list {
+  list-style: none;
+}
+
+.mentor-course-display-active-students-list-item {
+  margin-left: 15px;
+}
+
+.mentor-course-display-active-list-item {
+  cursor: pointer;
+}
+
+.mentor-course-display-active-list-item-link {
+  color: #000;
+  text-decoration: none;
+}

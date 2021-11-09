@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import blankProfilePicture from "../../../resources/blankProfilePicture.png";
 import imageupload from "../../../resources/imageupload.png";
-import MentorTechModal from "./MentorTechModal/MentorTechModal";
+import MentorTechModal from "./StudentTechModal/StudentTechModal";
 import ReactStars from "react-rating-stars-component";
 import { connect } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { motion } from "framer-motion";
 
-import "./MentorProfile.scss";
+import "./StudentProfile.scss";
 
-const MentorProfile = ({ token }) => {
+const StudentProfile = ({ token }) => {
   const [profile, setProfile] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [chosenCategoriesArray, setChosenCategoriesArray] = useState([]);
 
+  // eslint-disable-next-line no-unused-vars
   const [picture, setPicture] = useState();
   const [pictureSrc, setPictureSrc] = useState("");
 
@@ -119,13 +120,13 @@ const MentorProfile = ({ token }) => {
               <img
                 className="profile-info-upload-icon"
                 src={imageupload}
-                onError={(event) => (event.target.src = blankProfilePicture)}
                 alt="Upload"
               />
             </div>
             <img
               className="profile-info-picture"
               src={pictureSrc || blankProfilePicture}
+              onError={(event) => (event.target.src = blankProfilePicture)}
               alt="Profile"
             />
           </div>
@@ -191,4 +192,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(MentorProfile);
+export default connect(mapStateToProps)(StudentProfile);

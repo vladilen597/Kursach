@@ -1,7 +1,7 @@
 const initialState = {
-  profileId: null,
+  course: {},
   token:
-    "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2bGFkaWxlbiIsInJvbGVzIjpbIlJPTEVfTUVOVE9SIl0sImlhdCI6MTYzNjAxNjUwMywiZXhwIjoxNjM2MDUyNTAzfQ.SYUXzFHr_9IO1G6ZNsFd0Lp_V9YkIajYeSTBOfGTw28",
+    "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2bGFkaWxlbiIsInJvbGVzIjpbIlJPTEVfTUVOVE9SIl0sImlhdCI6MTYzNjQ0NjU1NywiZXhwIjoxNjM2NDgyNTU3fQ.hhFt_LLUD38qMk01YZZODm-Lu8f97KmaK_C5w4y6iFA",
 };
 
 const mentorReducer = (state = initialState, action) => {
@@ -9,8 +9,8 @@ const mentorReducer = (state = initialState, action) => {
     case "SET_TOKEN":
       console.log(action.payload);
       return { ...state, token: action.payload };
-    case "SET_PROFILE_ID":
-      return { ...state, profileId: action.payload };
+    case "SET_COURSE":
+      return { ...state, course: action.payload };
     default:
       return state;
   }

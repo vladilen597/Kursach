@@ -3,13 +3,24 @@ import ReactStars from "react-rating-stars-component";
 import { connect } from "react-redux";
 import { useLocation } from "react-router";
 import blankProfilePicture from "../../../../resources/blankProfilePicture.png";
+import StudentMentorCourseApplyDialog from "./StudentMentorCourseApplyDialog/StudentMentorCourseApplyDialog";
 
-import "./MentorStudentProfile.scss";
+import "./StudentMentorProfile.scss";
 
-const MentorStudentProfile = ({ token }) => {
+const StudentMentorProfile = ({ token }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [pictureSrc, setPictureSrc] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const username = useLocation().pathname.split("/").pop();
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+  };
 
   useEffect(() => {
     fetch(`http://localhost:8080/users/${username}`, {
@@ -50,10 +61,11 @@ const MentorStudentProfile = ({ token }) => {
     return <h1>Загрузка...</h1>;
   }
 
+  console.log(userProfile);
   return (
-    <main className="mentor-student-profile">
-      <form className="mentor-student-profile-form">
-        <section className="mentor-student-profile-form-rating-block">
+    <main className="student-mentor-profile">
+      <form className="student-mentor-profile-form">
+        <section className="student-mentor-profile-form-rating-block">
           <img
             className="profile-info-picture"
             src={pictureSrc || blankProfilePicture}
@@ -97,6 +109,14 @@ const MentorStudentProfile = ({ token }) => {
           <p className="profile-info-name-line"></p>
         </div>
       </form>
+      <button className="course-apply-button" onClick={handleDialogOpen}>
+        Подать заявку на курс
+      </button>
+      <StudentMentorCourseApplyDialog
+        handleDialogClose={handleDialogClose}
+        isDialogOpen={isDialogOpen}
+        userProfile={userProfile}
+      />
     </main>
   );
 };
@@ -107,4 +127,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(MentorStudentProfile);
+export default connect(mapStateToProps)(StudentMentorProfile);

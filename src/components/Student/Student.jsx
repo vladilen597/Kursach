@@ -1,22 +1,19 @@
 import React from "react";
 import { NavLink, Switch, Route } from "react-router-dom";
-import MentorProfile from "./MentorProfile/MentorProfile";
-import MentorStudentsList from "./MentorStudentsList/MentorStudentsList";
 import { BiUser } from "react-icons/bi";
 import { BsCardList } from "react-icons/bs";
 import { MdOutlinePlayLesson } from "react-icons/md";
-import MentorStudentProfile from "./MentorStudentsList/MentorStudentProfile/MentorStudentProfile";
-import MentorCourseList from "./MentorCourseList/MentorCourseList";
 import { useLocation } from "react-router";
-import { GrNotification } from "react-icons/gr";
-import MentorCoursePage from "./MentorCourseList/MentorCoursePage/MentorCoursePage";
 import { connect } from "react-redux";
 
-import "./Mentor.scss";
+import "./Student.scss";
 import { AnimatePresence } from "framer-motion";
-import MentorRequestList from "./MentorRequestList/MentorRequestList";
+import StudentMentorsList from "./StudentMentorsList/StudentMentorsList";
+import StudentProfile from "./StudentProfile/StudentProfile";
+import StudentCourseList from "./StudentCourseList/StudentCourseList";
+import StudentMentorProfile from "./StudentMentorsList/StudentMentorProfile/StudentMentorProfile";
 
-const Mentor = ({ token }) => {
+const Student = ({ token }) => {
   const location = useLocation();
 
   if (!token) {
@@ -26,7 +23,7 @@ const Mentor = ({ token }) => {
   return (
     <>
       <header className="header">
-        <h2 className="header-user">MENTOR.LAB</h2>
+        <h2 className="header-user">STUDENT.LAB</h2>
       </header>
       <main className="mentor-window">
         <aside className="mentor-navigation-bar">
@@ -35,7 +32,7 @@ const Mentor = ({ token }) => {
               <NavLink
                 className="mentor-navigation-bar-list-item-link"
                 activeClassName="mentor-navigation-bar-list-item-link_active"
-                to="/mentor/profile"
+                to="/student/profile"
               >
                 <BiUser className="mentor-navigation-bar-list-item-icon" />
                 Профиль
@@ -46,10 +43,10 @@ const Mentor = ({ token }) => {
               <NavLink
                 className="mentor-navigation-bar-list-item-link"
                 activeClassName="mentor-navigation-bar-list-item-link_active"
-                to="/mentor/students_list"
+                to="/student/mentors_list"
               >
                 <BsCardList className="mentor-navigation-bar-list-item-icon" />
-                Список студентов
+                Список преподавателей
               </NavLink>
             </li>
 
@@ -57,21 +54,10 @@ const Mentor = ({ token }) => {
               <NavLink
                 className="mentor-navigation-bar-list-item-link"
                 activeClassName="mentor-navigation-bar-list-item-link_active"
-                to="/mentor/course_list"
+                to="/student/course_list"
               >
                 <MdOutlinePlayLesson className="mentor-navigation-bar-list-item-icon" />
-                Список курсов
-              </NavLink>
-            </li>
-
-            <li className="mentor-navigation-bar-list-item">
-              <NavLink
-                className="mentor-navigation-bar-list-item-link"
-                activeClassName="mentor-navigation-bar-list-item-link_active"
-                to="/mentor/course_requests"
-              >
-                <GrNotification className="mentor-navigation-bar-list-item-icon" />
-                Заявки на курсы
+                Курсы
               </NavLink>
             </li>
           </ul>
@@ -79,21 +65,19 @@ const Mentor = ({ token }) => {
         <section className="mentor-switch">
           <AnimatePresence>
             <Switch location={location} key={location.pathname}>
-              <Route path="/mentor/profile" component={MentorProfile} />
+              <Route path="/student/profile" component={StudentProfile} />
               <Route
-                path="/mentor/students_list"
-                component={MentorStudentsList}
+                path="/student/mentors_list"
+                component={StudentMentorsList}
               />
               <Route
-                path="/mentor/student/:id"
-                component={MentorStudentProfile}
+                path="/student/mentor/:id"
+                component={StudentMentorProfile}
               />
-              <Route path="/mentor/course_list" component={MentorCourseList} />
               <Route
-                path="/mentor/course_requests"
-                component={MentorRequestList}
+                path="/student/course_list"
+                component={StudentCourseList}
               />
-              <Route path="/mentor/course/:id" component={MentorCoursePage} />
             </Switch>
           </AnimatePresence>
         </section>
@@ -108,4 +92,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Mentor);
+export default connect(mapStateToProps)(Student);

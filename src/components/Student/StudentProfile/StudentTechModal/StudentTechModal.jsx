@@ -5,11 +5,12 @@ import DialogActions from "@mui/material/DialogActions";
 import { IoCloseSharp, IoSearchOutline } from "react-icons/io5";
 import { IoMdCheckmark } from "react-icons/io";
 
-import "./MentorTechModal.scss";
+import "./StudentTechModal.scss";
+import { connect } from "react-redux";
 
 const techList = ["Java", ".NET", "React", "Vue"];
 
-const MentorTechModal = memo(
+const StudentTechModal = memo(
   ({
     handleDialogClose,
     isModalOpen,
@@ -18,6 +19,7 @@ const MentorTechModal = memo(
     setChosenCategoriesArray,
     chosenCategoriesArray,
     profilePicture,
+    token,
   }) => {
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -25,7 +27,6 @@ const MentorTechModal = memo(
       event.preventDefault();
       setSearchQuery(event.target.value);
     };
-
     console.log(profile);
     useEffect(() => {
       if (profile) {
@@ -38,10 +39,7 @@ const MentorTechModal = memo(
       setSearchQuery("");
 
       let myHeaders = new Headers();
-      myHeaders.append(
-        "Authorization",
-        "Bearer_eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2bGFkaWxlbiIsInJvbGVzIjpbIlJPTEVfTUVOVE9SIl0sImlhdCI6MTYzNTkzNDUxOSwiZXhwIjoxNjM1OTcwNTE5fQ.Oxt-nNzb9xOEbHlDyatF4dMCrU_Vs3IvB4U6p3p3p7M"
-      );
+      myHeaders.append("Authorization", token);
       myHeaders.append("Content-Type", "application/json");
       let raw = JSON.stringify({
         lastName: profile.lastName,
@@ -171,4 +169,10 @@ const MentorTechModal = memo(
   }
 );
 
-export default MentorTechModal;
+const mapStateToProps = (state) => {
+  return {
+    token: state.token,
+  };
+};
+
+export default connect(mapStateToProps)(StudentTechModal);
