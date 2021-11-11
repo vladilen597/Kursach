@@ -18,6 +18,7 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long authorId;
+    private String authorFullName;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)

@@ -24,14 +24,12 @@ public class TrainingCourseService {
     private final TrainingCourseRepository trainingCourseRepository;
     private final UserRepository userRepository;
     private final TrainingRequestRepository trainingRequestRepository;
-    private final MessageService messageService;
     private final ChatRoomService chatRoomService;
     private final UserRepresentationUtil representationUtil;
-    private final ModelMapper modelMapper;
 
-    public TrainingRequestRepresentation signForTraining(User assigner, String mentorName, Long courseId) {
+    public TrainingRequestRepresentation signForTraining(User assigner, Long courseId) {
         TrainingCourse trainingCourse = trainingCourseRepository.getById(courseId);
-        if(trainingCourse.getActiveStudents().contains(assigner)) {
+        if (trainingCourse.getActiveStudents().contains(assigner)) {
             throw new IllegalArgumentException("You are already enrolled for this course");
         }
         if (trainingCourse.getRequests()
@@ -40,8 +38,6 @@ public class TrainingCourseService {
                 .anyMatch(requester -> requester.equals(assigner))) {
             throw new IllegalArgumentException("You have already sent a request for this course");
         }
-        ChatRoom createdChat = chatRoomService.createChatRoom(assigner, mentorName);
-        messageService.createMessage(assigner, String.valueOf(createdChat.getId()), new TextDto("Hello, I want to sign for one of your trainings!!!"));
         TrainingRequest request = TrainingRequest
                 .builder()
                 .trainingCourse(trainingCourse)
@@ -54,14 +50,14 @@ public class TrainingCourseService {
         currentUser.getTrainingRequests().add(request);
         userRepository.save(currentUser);
         TrainingRequest savedRequest = trainingRequestRepository.save(request);
-        return getTrainingRequestRepresentation(assigner, mentorName, savedRequest);
+        return getTrainingRequestRepresentation(assigner, savedRequest);
     }
 
     public List<TrainingRequestRepresentation> findRequestsToMentor(User mentor) {
         List<TrainingRequest> requests = trainingRequestRepository.findAllByMentor(mentor);
         return requests
                 .stream()
-                .map(request -> getTrainingRequestRepresentation(request.getRequester(), mentor.getUsername(), request))
+                .map(request -> getTrainingRequestRepresentation(request.getRequester(), request))
                 .collect(Collectors.toList());
     }
 
@@ -103,10 +99,12 @@ public class TrainingCourseService {
         SkillLevel level = SkillLevel.valueOf(trainingCourseCreationDto.getSkillLevel());
         TrainingCourse trainingCourse = trainingCourseRepository.save(TrainingCourse.builder()
                 .owner(courseOwner)
+                .activeStudents(new ArrayList<>())
                 .courseName(trainingCourseCreationDto.getCourseName())
                 .description(trainingCourseCreationDto.getDescription())
-                        .skillLevel(level)
+                .skillLevel(level)
                 .build());
+        trainingCourse.setChatRoom(chatRoomService.createChatRoomForCourse(trainingCourse));
         return getTrainingCourseRepresentation(trainingCourse, trainingCourseCreationDto.getCourseName(), courseOwner);
     }
 
@@ -126,7 +124,7 @@ public class TrainingCourseService {
         User student = userRepository.findByUsername(studentName);
         return trainingRequestRepository.findAllByRequester(student)
                 .stream()
-                .map(request -> getTrainingRequestRepresentation(student, request.getMentor().getUsername(), request))
+                .map(request -> getTrainingRequestRepresentation(student, request))
                 .collect(Collectors.toList());
     }
 
@@ -137,13 +135,14 @@ public class TrainingCourseService {
             User student = userRepository.findById(request.get().getRequester().getId()).get();
             TrainingCourse trainingCourse = trainingRequest.getTrainingCourse();
             trainingCourse.getActiveStudents().add(student);
+            chatRoomService.addParticipant(trainingCourse.getChatRoom(), student);
             trainingCourseRepository.save(trainingCourse);
             trainingRequestRepository.delete(trainingRequest);
         });
         return trainingRequestRepository.findAllByMentor(mentor)
                 .stream()
                 .map(trainingRequest -> getTrainingRequestRepresentation(trainingRequest.getRequester(),
-                        trainingRequest.getMentor().getUsername(), trainingRequest))
+                        trainingRequest))
                 .collect(Collectors.toList());
     }
 
@@ -154,7 +153,7 @@ public class TrainingCourseService {
         return trainingRequestRepository.findAllByMentor(mentor)
                 .stream()
                 .map(trainingRequest -> getTrainingRequestRepresentation(trainingRequest.getRequester(),
-                        trainingRequest.getMentor().getUsername(), trainingRequest))
+                        trainingRequest))
                 .collect(Collectors.toList());
     }
 
@@ -168,6 +167,7 @@ public class TrainingCourseService {
                 throw new IllegalArgumentException("Invalid student id");
             }
             trainingCourse.getActiveStudents().remove(student.get());
+            chatRoomService.deleteParticipant(trainingCourse.getChatRoom(), student.get());
             TrainingCourse course = trainingCourseRepository.save(trainingCourse);
             return getTrainingCourseRepresentation(course, trainingCourse.getCourseName(), trainingCourse.getOwner());
         } else {
@@ -175,7 +175,20 @@ public class TrainingCourseService {
         }
     }
 
-    private TrainingRequestRepresentation getTrainingRequestRepresentation(User assigner, String mentorName, TrainingRequest request) {
+    public TrainingCourseRepresentation finishTrainingForAll(User mentor, String trainingId) {
+        Long idForTraining = defineId(trainingId);
+        TrainingCourse trainingCourse = trainingCourseRepository.getById(idForTraining);
+        if (trainingCourse.getOwner().getUsername().equals(mentor.getUsername())) {
+            trainingCourse.getActiveStudents().clear();
+            chatRoomService.deleteAllParticipants(trainingCourse.getChatRoom());
+            TrainingCourse course = trainingCourseRepository.save(trainingCourse);
+            return getTrainingCourseRepresentation(course, trainingCourse.getCourseName(), trainingCourse.getOwner());
+        } else {
+            throw new IllegalArgumentException("This course is not permitted to be changed by you");
+        }
+    }
+
+    private TrainingRequestRepresentation getTrainingRequestRepresentation(User assigner, TrainingRequest request) {
         return TrainingRequestRepresentation.builder()
                 .requestId(request.getId())
                 .creationTime(request.getCreationDateTime())
@@ -194,7 +207,7 @@ public class TrainingCourseService {
             course.setActiveStudents(new ArrayList<>());
         }
         String skillLevel = "Нету";
-        if(course.getSkillLevel() != null) {
+        if (course.getSkillLevel() != null) {
             skillLevel = course.getSkillLevel().getRussianAnalogue();
         }
         return TrainingCourseRepresentation.builder()

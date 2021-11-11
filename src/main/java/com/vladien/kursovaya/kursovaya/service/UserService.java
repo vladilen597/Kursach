@@ -133,16 +133,6 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toSet());
     }
 
-    //public List<UserRepresentationDto> findMentorUnapprovedTrainees(User mentor) {
-    //    return userRepository.findById(mentor.getId())
-    //            .map(User::getTrainingRequests)
-    //            .orElse(new ArrayList<>())
-    //            .stream()
-    //            .map(request -> userRepository.findByUsername(request.getRequester().getUsername()))
-    //            .map(student -> representationUtil.defineUserRepresentation(student.getUsername()))
-    //            .collect(Collectors.toList());
-    //}
-
     private List<User> filterAllSpecifiedRoleUsers(int rating, UserRole role, List<CoreSkill> skills) {
         return userRepository
                 .findAllByRolesContains(role)

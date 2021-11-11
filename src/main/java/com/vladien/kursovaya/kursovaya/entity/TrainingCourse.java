@@ -27,6 +27,10 @@ public class TrainingCourse {
     @JoinColumn(name = "user_id")
     private User owner;
 
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "chat_id", referencedColumnName = "id")
+    private ChatRoom chatRoom;
+
     @ManyToMany
     @JoinTable(
             name = "students_courses_active",

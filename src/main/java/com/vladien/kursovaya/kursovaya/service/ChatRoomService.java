@@ -1,89 +1,87 @@
 package com.vladien.kursovaya.kursovaya.service;
 
 import com.vladien.kursovaya.kursovaya.entity.ChatRoom;
+import com.vladien.kursovaya.kursovaya.entity.TrainingCourse;
 import com.vladien.kursovaya.kursovaya.entity.User;
-import com.vladien.kursovaya.kursovaya.entity.dto.ChatDto;
+import com.vladien.kursovaya.kursovaya.entity.dto.ChatRepresentation;
+import com.vladien.kursovaya.kursovaya.entity.dto.UserRepresentationDto;
 import com.vladien.kursovaya.kursovaya.repository.ChatRoomRepository;
-import com.vladien.kursovaya.kursovaya.repository.UserRepository;
+import com.vladien.kursovaya.kursovaya.repository.TrainingCourseRepository;
+import com.vladien.kursovaya.kursovaya.service.util.UserRepresentationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
+    private final TrainingCourseRepository trainingCourseRepository;
+    private final UserRepresentationUtil representationUtil;
 
-    public List<ChatRoom> findByUser(User user) {
-        List<ChatRoom> chats = chatRoomRepository.findAllByParticipantsContains(user);
-        chats = chats.stream().map(chat -> defineOneToOneChatParameters(chat, user)).collect(Collectors.toList());
-        chats = chats.stream().map(chat -> defineOneUserChatParameters(chat, user)).collect(Collectors.toList());
-        return chats;
-    }
-
-    public ChatRoom showChat(User user, String id) {
-        Long chatId = Long.parseLong(id);
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(chatId);
-        if (chatRoom.get().getParticipants().contains(user)) {
-            chatRoom = Optional.of(defineOneToOneChatParameters(chatRoom.get(), user));
-            chatRoom = Optional.of(defineOneUserChatParameters(chatRoom.get(), user));
+    public ChatRepresentation showChatForCourse(User user, String id) {
+        Long courseId = Long.parseLong(id);
+        Optional<TrainingCourse> course = trainingCourseRepository.findById(courseId);
+        if (course.get().getChatRoom().getParticipants().contains(user)) {
+            ChatRoom chatRoom = course.get().getChatRoom();
+            return defineChatRepresentation(chatRoom);
         }
-        return chatRoom.get();
+        throw new IllegalArgumentException("You are not a part of this chat");
     }
 
-    public ChatRoom createChatRoom(User currentUser, ChatDto chatDto) {
-        Set<User> users =
-                chatDto.getMembersUsernames().stream().map(userRepository::findByUsername).collect(Collectors.toSet());
-        users.add(currentUser);
+    public ChatRoom addParticipant(ChatRoom chatRoom, User user) {
+        chatRoom.getParticipants().add(user);
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoom deleteParticipant(ChatRoom chatRoom, User user) {
+        chatRoom.getParticipants().remove(user);
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoom deleteAllParticipants(ChatRoom chatRoom) {
+        chatRoom.getParticipants().clear();
+        return chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoom createChatRoomForCourse(TrainingCourse course) {
+        List<User> users = course.getActiveStudents();
         ChatRoom newChatRoom = new ChatRoom();
-        newChatRoom.setParticipants(users);
+        newChatRoom.setParticipants(new HashSet<>(users));
+        newChatRoom.getParticipants().add(course.getOwner());
         newChatRoom.setMessages(new ArrayList<>());
-        newChatRoom.setName(chatDto.getChatName());
-        chatRoomRepository.save(newChatRoom);
+        newChatRoom.setName(course.getCourseName());
+        newChatRoom.setTrainingCourse(course);
+        newChatRoom = chatRoomRepository.save(newChatRoom);
+        course.setChatRoom(newChatRoom);
+        trainingCourseRepository.save(course);
         return newChatRoom;
     }
 
-    public ChatRoom createChatRoom(User currentUser, String recipientName) {
-        ChatRoom chatRoom = new ChatRoom();
-        User recipient = userRepository.findByUsername(recipientName);
-        if (recipient != null) {
-            chatRoom.setMessages(new ArrayList<>());
-            chatRoom.setParticipants(Stream.of(currentUser, recipient).collect(Collectors.toSet()));
-            chatRoomRepository.save(chatRoom);
-            return chatRoom;
-        } else {
-            throw new IllegalArgumentException("Wrong recipient name");
+    public ChatRoom findChatForCourse(Long courseID) {
+        if(trainingCourseRepository.findById(courseID).isEmpty()) {
+            throw new IllegalArgumentException("No course with such id");
         }
+        return trainingCourseRepository.findById(courseID).get().getChatRoom();
     }
 
-    public Optional<ChatRoom> findById(Long id) {
-        return chatRoomRepository.findById(id);
+    private ChatRepresentation defineChatRepresentation(ChatRoom chatRoom) {
+        return ChatRepresentation.builder()
+                .id(chatRoom.getId())
+                .messages(chatRoom.getMessages())
+                .name(chatRoom.getName())
+                .trainingCourseId(chatRoom.getTrainingCourse().getId())
+                .participants(transformListOfUsersToRepresentations(chatRoom.getParticipants()))
+                .build();
     }
 
-    private ChatRoom defineOneToOneChatParameters(ChatRoom chatRoom, User currentUser) {
-        if (chatRoom.getParticipants().size() == 2) {
-            for (User recipient : chatRoom.getParticipants()) {
-                if (!recipient.equals(currentUser)) {
-                    chatRoom.setName(recipient.getUsername());
-                }
-            }
-        }
-        return chatRoom;
-    }
-
-    private ChatRoom defineOneUserChatParameters(ChatRoom chatRoom, User currentUser) {
-        if (chatRoom.getParticipants().size() == 1) {
-            chatRoom.setName(currentUser.getUsername());
-        }
-        return chatRoom;
+    private List<UserRepresentationDto> transformListOfUsersToRepresentations(Set<User> users) {
+        return users.stream()
+                .map(user -> representationUtil.defineUserRepresentation(user.getUsername()))
+                .collect(Collectors.toList());
     }
 }

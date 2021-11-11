@@ -33,5 +33,8 @@ public class ChatRoom {
     )
     private Set<User> participants;
 
+    @OneToOne(mappedBy = "chatRoom", fetch = FetchType.LAZY)
+    private TrainingCourse trainingCourse;
+
     private String name;
 }

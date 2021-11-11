@@ -4,6 +4,8 @@ import com.vladien.kursovaya.kursovaya.controller.util.CurrentPrincipalDefiner;
 import com.vladien.kursovaya.kursovaya.entity.User;
 import com.vladien.kursovaya.kursovaya.entity.dto.*;
 import com.vladien.kursovaya.kursovaya.security.JwtAuthenticationException;
+import com.vladien.kursovaya.kursovaya.service.ChatRoomService;
+import com.vladien.kursovaya.kursovaya.service.MessageService;
 import com.vladien.kursovaya.kursovaya.service.TrainingCourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import java.util.NoSuchElementException;
 public class TrainingCourseController {
     private final TrainingCourseService trainingCourseService;
     private final CurrentPrincipalDefiner principalDefiner;
+    private final MessageService messageService;
+    private final ChatRoomService chatRoomService;
 
     @GetMapping("/{mentorName}")
     public List<TrainingCourseRepresentation> showMentorCourses(@PathVariable String mentorName) {
@@ -60,9 +64,9 @@ public class TrainingCourseController {
 
     @PostMapping("/{mentorName}")
     @Secured("ROLE_CLIENT")
-    public TrainingRequestRepresentation signForTraining(@RequestBody IdDto idDto, @PathVariable String mentorName) {
+    public TrainingRequestRepresentation signForTraining(@RequestBody IdDto idDto) {
         User principal = principalDefiner.getPrincipal();
-        return trainingCourseService.signForTraining(principal, mentorName, idDto.getId());
+        return trainingCourseService.signForTraining(principal, idDto.getId());
     }
 
     @GetMapping("/requests")
@@ -118,6 +122,38 @@ public class TrainingCourseController {
     public TrainingCourseRepresentation finishTraining(@PathVariable String studentId, @PathVariable String courseId) {
         User principal = principalDefiner.getPrincipal();
         return trainingCourseService.finishTraining(principal, courseId, studentId);
+    }
+
+    @PostMapping("/students/training/{courseId}/finish")
+    @Secured("ROLE_MENTOR")
+    public TrainingCourseRepresentation finishTrainingForAllStudents(@PathVariable String courseId) {
+        User principal = principalDefiner.getPrincipal();
+        return trainingCourseService.finishTrainingForAll(principal, courseId);
+    }
+
+    @GetMapping("/students/training/{courseId}/chat")
+    @Secured("ROLE_MENTOR")
+    public ChatRepresentation showCourseChat(@PathVariable String courseId) {
+        User user = principalDefiner.getPrincipal();
+        return chatRoomService.showChatForCourse(user, courseId);
+    }
+
+    @PostMapping(value = "/students/training/{courseId}/chat")
+    public ChatRepresentation addMessage(@PathVariable String courseId, @RequestBody TextDto newMessage) {
+        User user = principalDefiner.getPrincipal();
+        return messageService.createMessage(user, courseId, newMessage);
+    }
+
+    @DeleteMapping(value = "/students/training/{courseId}/chat")
+    public ChatRepresentation deleteMessage(@PathVariable String courseId, @RequestBody IdDto messageId) {
+        User user = principalDefiner.getPrincipal();
+        return messageService.deleteMessage(user, courseId, messageId.getId());
+    }
+
+    @PutMapping(value = "/students/training/{courseId}/chat")
+    public ChatRepresentation editMessage(@PathVariable String courseId, @RequestBody EditMessageDto editedMessage) {
+        User user = principalDefiner.getPrincipal();
+        return messageService.editMessage(user, courseId, editedMessage);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
