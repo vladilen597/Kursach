@@ -132,7 +132,6 @@ public class TrainingCourseController {
     }
 
     @GetMapping("/students/training/{courseId}/chat")
-    @Secured("ROLE_MENTOR")
     public ChatRepresentation showCourseChat(@PathVariable String courseId) {
         User user = principalDefiner.getPrincipal();
         return chatRoomService.showChatForCourse(user, courseId);

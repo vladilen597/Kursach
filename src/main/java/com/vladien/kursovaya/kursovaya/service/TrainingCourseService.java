@@ -181,6 +181,7 @@ public class TrainingCourseService {
         if (trainingCourse.getOwner().getUsername().equals(mentor.getUsername())) {
             trainingCourse.getActiveStudents().clear();
             chatRoomService.deleteAllParticipants(trainingCourse.getChatRoom());
+            chatRoomService.addParticipant(trainingCourse.getChatRoom(), mentor);
             TrainingCourse course = trainingCourseRepository.save(trainingCourse);
             return getTrainingCourseRepresentation(course, trainingCourse.getCourseName(), trainingCourse.getOwner());
         } else {
